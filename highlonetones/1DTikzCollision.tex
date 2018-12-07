@@ -5,17 +5,30 @@
 \newcommand{\myshift}{}
 \begin{document}
 %	\NewDocumentCommand \AlignTones {m m} {
-		
-	\begin{tikzpicture} [aligntones/.style={decoration={text effects along path,
-	text={#1},
-	text effects/.cd,
-	path from text, character count=\i,
-	characters={text along path,text depth=0ex,name=\i}},
-}]
-	\path [decorate,aligntones=Text, text effects={characters/.append={}}] (0,0);	
-	\foreach \x/\y in {#2} {
-	\node[below=\baselineskip of \y] (\y i) {\x};
-	\draw[solid] (\y) -- (\y i);};
+	
+
+	\begin{tikzpicture} [aligntones/.style={
+	decorate,
+	decoration={text effects along path,
+		text={#1},
+		text effects/.cd,
+		path from text, character count=\i,
+		characters={text along path,text depth=0ex,name=\i},
+	    text effects={characters/.append={}}
+    	},
+	},
+	belowcharnumber/.style={
+		below=\baselineskip of #1,
+		name=#1i,
+		append after command={
+			\pgfextra{\draw (#1.south) -- (#1i);}
+		}
+	}
+]
+	\path [aligntones=My long word] (0,0);	
+%	\foreach \x/\y in {#2} {
+	\node[belowcharnumber=10] {HL};
+%	\draw[solid] (10) -- (10i);
 		
 %	\node [inner xsep=0pt,draw=red] (A) at (1,5) {Test};
 %	\node [inner xsep=0pt,draw=green] (B) at (1.25,5) {Test2};
