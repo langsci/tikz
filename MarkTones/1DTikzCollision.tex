@@ -1,0 +1,62 @@
+\documentclass{article}
+\usepackage{ifthen,libertine,tikz,pgfmath,calc,xparse}
+\usetikzlibrary{calc,positioning,decorations.text}
+
+\begin{document}
+	\def\LSPAlignTonesLastnode{none}
+	\def\none{none}
+	\def\LSPAlignTonesXshift{0mm}
+	\NewDocumentEnvironment{aligntones}{m}{%
+	\begin{tikzpicture} [
+	baseline, 
+	aligntones/.style={
+	anchor=base,
+	decorate,
+	decoration={text effects along path,
+		text={##1}, % #1 == ##1
+		text effects/.cd,
+		path from text, character count=\i,
+		characters={text along path,text depth=0ex,name=\i},
+	    text effects={characters/.append={}}
+    	},
+	},
+	belowcharnumber/.style={
+		anchor=base,
+		below=\baselineskip of ##1,
+		name=##1i,
+		xshift=\LSPAlignTonesXshift,
+		append after command={
+			\pgfextra{\draw (##1.south) -- (##1i);
+			\xdef\LSPAlignTonesLastnode{##1i} % save the last node for further reference
+			}
+		}
+	}
+]
+\path [aligntones=#1] (0,0);
+}{\end{tikzpicture}}
+
+\NewDocumentCommand{\AlignTones}{m}{
+\foreach \a/\b in {#1} {
+	\ifx\LSPAlignTonesLastnode\none % has there been a previous node?
+		\node[belowcharnumber=\a,inner xsep=0pt,draw=blue] {\b};
+	\else % There has not been a previous node
+		\def\LSPAlignTonesNewnode{\a}
+		\def\LSPAlignTonesNewentry{\b}
+		\coordinate (A) at (\LSPAlignTonesLastnode);
+		\path let \p1 = (A), \p2 = (\LSPAlignTonesNewnode) in node (B) at (\x2,\y1) [minimum width=2.5pt, minimum height=2ex,draw=red,inner xsep=0pt] {\settowidth{\dimen0}{\LSPAlignTonesNewentry}\hspace*{\dimen0}}; 
+		\path let  \p1 = ( $(\LSPAlignTonesLastnode.east) - (B.west)$ ), \n1 = {veclen(\x1,\y1)} 
+		in \pgfextra{
+			\pgfmathanglebetweenpoints{\pgfpointanchor{\LSPAlignTonesLastnode}{east}}{\pgfpointanchor{B}{west}}
+			\let\abangle\pgfmathresult
+			\pgfmathparse{or(scalar(\n1)<2,notequal(scalar(\abangle),0))} % 2pt is the width of a small space
+			\ifthenelse{\pgfmathresult=1}{\pgfmathsetlengthmacro{\LSPAlignTonesXshift}{.75em}}{\pgfmathsetlengthmacro{\LSPAlignTonesXshift}{0pt}}
+		} node[belowcharnumber=\LSPAlignTonesNewnode,align=center] {\LSPAlignTonesNewentry};
+	\fi
+	}
+}
+\begin{aligntones}{My text} 
+	\AlignTones{2/HL!L, 7/H}
+\end{aligntones}
+
+
+\end{document}
