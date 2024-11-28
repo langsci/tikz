@@ -1,0 +1,45 @@
+\documentclass{langscibook}
+
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+
+% Define colours for the bars
+\pgfplotscreateplotcyclelist{langsci-RdYlBu-5}{
+	{lsRed,fill=lsRed!90!white,mark=none},
+	{lsMidOrange,fill=lsMidOrange!80,mark=none},
+	{lsYellow,fill=lsYellow!80,mark=none},
+	{lsLightBlue,fill=lsLightBlue!80,mark=none},
+	{lsNightBlue,fill=lsNightBlue!80,mark=none}
+}
+
+\begin{document}
+\begin{figure}
+    \pgfplotstableread{data.csv}\MyTableName
+    \begin{tikzpicture}
+	\small
+	\begin{axis}
+		[
+			ybar=1.5pt,
+			ymin=0,
+			ylabel near ticks,
+			xticklabels from table={\MyTableName}{Data},
+			xtick=data,
+			bar width=1ex,
+			axis lines*=left,
+			width=\textwidth,
+			height=5cm,
+			cycle list name=langsci-RdYlBu-5,
+			x tick label style={text width=1.25cm, align=center,font=\sloppy}
+		]
+		\foreach \i in {A1,A2,B1,B2,C1}
+		  {
+		  	\addplot table [x expr=\coordindex, x=Data, y=\i] {\MyTableName};
+		    \edef\temp{\noexpand\addlegendentry{\i}}
+		    \temp
+ 		  }
+	\end{axis}
+    \end{tikzpicture}
+    \caption{Contiguous MWE types in coursebook data (receptive) over CEFR levels per 10 000 tokens, i.e. the frequency of occurrence (cf. tokens) of the different types (cf. lemmas) is not considered here.}
+    \label{fig:MWEcontig}
+\end{figure}
+\end{document}
