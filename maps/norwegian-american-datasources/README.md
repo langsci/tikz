@@ -11,3 +11,8 @@ Hjelde, Arnstein. Norwegian emigration and language. In: Kari Kinn & Michael Put
 - TeX Live 2024 or later
 - An API key from [Thunderforest](https://www.thunderforest.com/) to download the map tiles.
 
+## Run with `shell-escape`
+
+``
+xelatex --shell-escape map
+``
