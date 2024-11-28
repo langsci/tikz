@@ -1,0 +1,24 @@
+\documentclass{langscibook}
+
+\usepackage{mercatormap}
+\mrcactivatescript
+\begin{document}
+	 \mrcsetapikey{thunderforest}{YOUR API KEY}
+\begin{tikzpicture}
+	\mrcmap[type=boundaries,
+	west=-105,east=-86,south=41,north=49,
+	zoom=6,
+	source=thunderforest landscape,
+	]{mrcmap}
+	\mrcdrawmap
+	\mrcdrawnetwork
+	\node[below,font=\fontsize{7pt}{7pt}\sffamily] at (mrcmap.south) {\mrcmapattribution};
+	\mermapsetmarker{type=knob, radius=1.5mm}
+	% Blue dots
+	\mrcmarker{lon=-88.8627931, lat=42.4948004, draw=lsMidDarkBlue,fill=lsMidDarkBlue!50}
+	% Grey dots
+	\mrcmarker{lon=-91.1955387, lat=44.289622, draw=black,fill=black!50}
+	% Yellow dots
+	\mrcmarker{lon=-90.8542977,lat=43.6569157, draw=lsYellow,fill=lsYellow!50}
+\end{tikzpicture}
+\end{document}
